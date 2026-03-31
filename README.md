@@ -1,123 +1,269 @@
 # Maida
 
-**You have hundreds of games. Tonight you still don't know what to play.**
+If Maida helps you, buy me a coffee:
 
-You open your Steam library.
-You scroll.
-You stare.
-You close it.
-Or you go back to the same few games again—not because they are the best, but because choosing feels heavier than playing.
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/W7W21WT2FT)
 
-Maida exists for that moment.
+Maida is a cross-platform desktop app built with **Tauri 2 + React + Vite**.
 
-It is not a recommendation engine.
-It is not a backlog manager.
-It does not try to optimize your library or persuade you to engage more.
+It helps Steam players cut through library paralysis by replacing endless browsing with a simpler interaction: show one installed game, decide **Try it now** or **Not now**, then move on.
 
-Maida shows you **one game at a time** from the games you already have installed.
-You answer with a simple choice:
-- **Try it now**
-- **Not now**
+This repository is the application source for the Maida desktop client, not a landing page or manifesto. The README below is written accordingly.
 
-That is enough to begin.
+## App Summary
 
-## What problem Maida solves
+- **Product name:** Maida
+- **Current version:** `0.1.0`
+- **App identifier:** `com.brightraven.maida`
+- **Frontend:** React 18 + Vite 7
+- **Desktop runtime:** Tauri 2
+- **Backend language:** Rust 2021
+- **Package manager:** pnpm `10.28.2`
+- **Supported UI languages:** English, Japanese, Simplified Chinese, Traditional Chinese
+- **Target platforms:** Windows, Linux
+- **Release bundle targets:** NSIS, `.deb`, AppImage
 
-Maida is built for library paralysis.
+## What the App Does
 
-When you have 200, 300, or 500 games, the problem is often not access.
-It is not a lack of options.
-It is that your free time starts to feel like work.
+Maida is designed for the moment when a player has plenty of installed games but cannot cleanly start one.
 
-Too many installed games become too many unfinished possibilities.
-Instead of excitement, you get hesitation.
-Instead of play, you get comparison.
-Instead of starting, you close the library and do something else.
+Core flow:
+1. Read the local installed-game set from Steam.
+2. Present one candidate at a time.
+3. Let the player decide: **Try it now** or **Not now**.
+4. Preserve momentum instead of turning leisure into another optimization problem.
 
-Maida reduces that pressure by shrinking the choice itself.
-
-## What Maida is
-
-Maida is a desktop app for Steam players who want a calmer way to begin.
-
-It works like this:
-1. It reads the games you already have installed.
-2. It presents one game.
-3. You decide: now, or not now.
-4. Then it gets out of the way.
-
-No endless browsing.
-No ranking screen.
-No algorithm pretending to know you better than you know yourself.
-
-## What Maida is not
-
-Maida deliberately refuses several common product patterns.
-
-It is **not**:
+Maida is intentionally **not**:
 - a recommendation engine
+- a backlog manager
 - a social feed
-- a retention trap
-- a streak system
-- a guilt machine for your backlog
+- a retention loop
+- a guilt machine for unfinished games
 
-It does not try to keep you inside itself.
-If one day you no longer need Maida, that means it worked.
+## Current Feature Surface
 
-## Core ideas
+### Core product flow
+- Steam installed-game detection
+- Single-game presentation flow
+- Session logic for accept / skip decisions
+- Persistent local state
+- Onboarding flow for first use
 
-Maida is shaped around two modes:
+### Interaction and interface
+- Full keyboard navigation
+- Gamepad support
+- Screen-reader-aware desktop UI
+- Error boundary and recovery handling
+- Theme handling and desktop-style application shell
 
-- **Kamae** — prepare the field. Narrow the space before choosing.
-- **Rin** — face the moment. One game. One decision.
+### Content and localization
+- English (`en`)
+- Japanese (`ja`)
+- Simplified Chinese (`zh-CN`)
+- Traditional Chinese (`zh-TW`)
 
-These are not decorative terms. They describe the rhythm of the tool:
-prepare quietly, then begin cleanly.
+### Desktop integration
+- Tauri IPC bridge between frontend and Rust backend
+- Native updater integration
+- Single-instance handling
+- Native dialog / opener / store plugins
 
-## Accessibility
+## Tech Stack
 
-Accessibility is part of the product, not an afterthought.
+### Frontend
+| Dependency | Version |
+|---|---:|
+| react | `^18.2.0` |
+| react-dom | `^18.2.0` |
+| vite | `^7.3.0` |
+| @vitejs/plugin-react | `^4.2.1` |
 
-Current support includes:
-- full keyboard navigation
-- NVDA screen reader support on Windows
-- gamepad support (D-pad, A/B buttons)
-- interface localization in English, Japanese, Simplified Chinese, and Traditional Chinese
+### Tauri / desktop
+| Dependency | Version |
+|---|---:|
+| @tauri-apps/api | `^2.10.1` |
+| @tauri-apps/cli | `^2.10.1` |
+| @tauri-apps/plugin-process | `~2.3.1` |
+| @tauri-apps/plugin-updater | `~2.10.0` |
+| tauri | `2` |
+| tauri-build | `2` |
+| tauri-plugin-dialog | `~2` |
+| tauri-plugin-opener | `~2` |
+| tauri-plugin-single-instance | `~2` |
+| tauri-plugin-store | `~2` |
+| tauri-plugin-updater | `~2` |
 
-## Privacy
+### Rust backend
+| Crate | Version |
+|---|---:|
+| serde | `1` |
+| serde_json | `1` |
+| reqwest | `0.12` |
+| tokio | `1` |
+| keyring | `3` |
+| regex | `1` |
+| chrono | `0.4` |
+| log | `0.4` |
+| uuid | `1` |
+| rand | `0.9` |
+| winreg *(Windows only)* | `0.55` |
+| tempfile *(dev)* | `3` |
 
-Your game data stays on your device.
+### Testing and QA
+| Dependency | Version |
+|---|---:|
+| vitest | `^4.0.18` |
+| @vitest/coverage-v8 | `^4.0.18` |
+| @playwright/test | `^1.58.2` |
+| @axe-core/playwright | `^4.11.1` |
 
-Maida currently sends **one anonymous ping per launch** containing:
-- a random ID
-- install day count
+## Repository Structure
 
-This can be turned off in Settings.
+```text
+.
+├── src/                  # React frontend
+├── src-tauri/            # Rust backend + Tauri config
+├── e2e/                  # Playwright accessibility / e2e tests
+├── .github/workflows/    # CI and release automation
+├── package.json          # JS scripts and dependency versions
+├── pnpm-lock.yaml        # Locked JS dependency graph
+└── README.md
+```
 
-## Platform support
+More detailed frontend architecture notes live in `src/README.md`.
 
-- Windows
-- Linux
+## Development Requirements
 
-## Development
+### Required tools
+- **Node.js** compatible with the current pnpm / Vite / Tauri toolchain
+- **pnpm `10.28.2`**
+- **Rust stable toolchain**
+- **Tauri build prerequisites** for your platform
+
+### Linux packaging/runtime dependencies
+The current Linux bundle config declares:
+- `libwebkit2gtk-4.1-0`
+- `libgtk-3-0`
+
+The current GitHub release workflow installs these build dependencies on Ubuntu:
+- `libwebkit2gtk-4.1-dev`
+- `libappindicator3-dev`
+- `librsvg2-dev`
+- `patchelf`
+
+## Install Dependencies
 
 ```bash
 pnpm install
+```
+
+## Run in Development
+
+```bash
 pnpm run tauri:dev
 ```
 
-## Testing
+This starts the Vite dev server and launches the Tauri desktop shell against `http://localhost:5173`.
 
-```bash
-pnpm run test
-pnpm run test:e2e
-```
-
-## Building
+## Build the App
 
 ```bash
 pnpm run tauri:build
 ```
+
+Current Tauri bundle targets:
+- `nsis`
+- `deb`
+- `appimage`
+
+## Frontend-only Commands
+
+```bash
+pnpm run dev
+pnpm run build
+pnpm run preview
+pnpm run lint
+```
+
+## Test Commands
+
+```bash
+pnpm run test
+pnpm run test:watch
+pnpm run test:coverage
+pnpm run test:e2e
+```
+
+## CI / Release Automation
+
+### Test workflow
+GitHub Actions currently runs:
+- unit tests on `push` to `main`
+- unit tests on pull requests to `main`
+- Playwright accessibility / e2e coverage on pull requests to `main`
+
+CI currently uses:
+- **Node.js 24**
+- **pnpm**
+- Ubuntu runners for tests
+
+### Release workflow
+Tagged releases (`v*`) currently build on:
+- `windows-latest`
+- `ubuntu-22.04`
+
+The release pipeline:
+- installs Rust stable
+- restores Rust cache
+- installs platform dependencies
+- runs tests
+- builds the Tauri application
+- drafts a GitHub release with updater metadata
+
+## Configuration Notes
+
+### App window
+Current desktop window configuration:
+- initial size: `1200 × 800`
+- minimum size: `1024 × 680`
+- resizable: yes
+
+### Updater
+The updater is configured to read release metadata from:
+- `https://github.com/devBrightRaven/maida/releases/latest/download/latest.json`
+
+### Content Security Policy
+The current Tauri CSP allows outbound connections for app functionality to:
+- `https://api.igdb.com`
+- `https://id.twitch.tv`
+- Steam and IGDB image CDNs
+
+## Accessibility
+
+Current repository signals for accessibility work include:
+- keyboard-first interaction support
+- screen reader support targets
+- Playwright + axe-based accessibility testing
+- localization across four UI languages
+
+## Privacy
+
+Maida is designed around local use.
+
+Current behavior documented in the product copy:
+- game data stays on device
+- one anonymous launch ping may be sent with a random ID and install day count
+- telemetry can be turned off in Settings
+
+If this behavior changes, the README should be updated alongside the app and privacy-facing screens.
+
+## Status
+
+Current repository state suggests:
+- active desktop app development
+- Tauri 2 migration already in place
+- automated test and release workflows configured
+- Windows and Linux as the primary shipping targets
 
 ## License
 
